@@ -38,18 +38,35 @@
       </video>
 
       <div>
+
         <div v-for="(cue, index) in currentCues" :key="index" class="mt-0 mb-0 bg-black">
-          <span v-for="(mono_cue, index) in cue.text.split('§')" :key="index">
-            <span
-              v-for="(word, index) in mono_cue.split(' ')"
-              :key="index"
-              @click="getSubtitleLine(cue)"
-              class="text-h5 click"
-            >
-              {{ word }}&nbsp;
-            </span>
-          </span>
+          <div class="subtitle-line">
+            <div class="chinese-subtitle">
+              <span
+                  v-for="(word, wordIndex) in (cue.text.split('§§§')[0] || '').split(' ')"
+                  :key="'zh-' + wordIndex"
+                  @click="getSubtitleLine(cue)"
+                  class="text-h5 click"
+              >
+                &nbsp;{{ word }}&nbsp;
+              </span>
+            </div>
+            <div class="english-subtitle" v-if="cue.text.includes('§§§')">
+              <span
+                  v-for="(word, wordIndex) in (cue.text.split('§§§')[1] || '').split(' ')"
+                  :key="'en-' + wordIndex"
+                  @click="getSubtitleLine(cue)"
+                  class="text-h5 click"
+              >
+                &nbsp;{{ word }}&nbsp;
+              </span>
+            </div>
+          </div>
         </div>
+
+
+
+
       </div>
     </div>
 
@@ -284,4 +301,20 @@ div {
 .custom-progress-bar::-webkit-progress-value {
   background: #007bff;
 }
+
+.subtitle-line {
+  text-align: left;
+  color: white;
+
+}
+
+.chinese-subtitle,
+.english-subtitle {
+  margin: 0;
+  padding: 0;
+  line-height: 1.0;
+  font-size: 18px;
+}
+
+
 </style>
