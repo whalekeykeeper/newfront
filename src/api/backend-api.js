@@ -14,7 +14,7 @@ axiosApi.interceptors.request.use(
   (config) => {
     const userUUID = localStorage.getItem('user_uuid')
     if (userUUID) {
-      config.headers['uuid'] = "8f925804-da14-4ae5-a365-37a635955bc9"
+      config.headers['uuid'] = userUUID  //"8f925804-da14-4ae5-a365-37a635955bc9"
     }
     return config
   },
@@ -28,9 +28,10 @@ const api = {
     return axiosApi.get(`/videos/test`);
   },
   getVideo(request) {
-    return axiosApi.post(`/videos`, request, {
-      headers: { uuid: '123e4567-e89b-12d3-a456-426614174012' }
-    });
+    return axiosApi.post(`/videos`, request);
+    // return axiosApi.post(`/videos`, request, {
+    //   headers: { uuid: '123e4567-e89b-12d3-a456-426614174012' }
+    // });
   },
   updateChosenWords(request) {
     return axiosApi.post(`/videos/chosen`, request);

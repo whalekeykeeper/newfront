@@ -21,8 +21,17 @@ const vuetify = createVuetify({
 
 async function initializeApp() {
     try {
-        // Ensure the UUID is available before initializing the app
-        // await getOrCreateUser();
+        // Check if the user is logged in
+        let userUUID = localStorage.getItem("user_uuid");
+        // If userUUID is not found, generate a new one
+        if (!userUUID) {
+            userUUID = crypto.randomUUID();
+            localStorage.setItem("user_uuid", userUUID);
+            console.log("Generated new user_uuid:", userUUID);
+        } else {
+            console.log("Existing user_uuid found:", userUUID);
+        }
+
         const app = createApp(App)
 
         app.use(createPinia())
