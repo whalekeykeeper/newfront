@@ -3,7 +3,7 @@
     <v-progress-circular class="text-center" indeterminate v-if="isLoading" />
     <div v-else class="exercise-container">
       <h1>Exercises</h1>
-      <p>Select the correct word that fits all sentences displayed.</p>
+      <p>Select the correct lemma that fits all sentences displayed.</p>
 
       <div v-for="(exercise, index) in exercises" :key="index" class="exercise">
         <v-divider class="my-4" />
@@ -15,15 +15,17 @@
           <div v-for="(sentence, sentenceIndex) in wordForm.sentences" :key="sentenceIndex" class="sentence">
             <p>
               {{ wordIndex + sentenceIndex + 1 }}. {{ sentence }}
-              <span v-if="showSolution" class="solution-word">({{wordForm.word }})</span>
+              <span v-if="showSolution" class="solution-word">({{ wordForm.word }})</span>
             </p>
           </div>
         </div>
 
         <v-select
             v-model="selectedAnswers[index].selected_word"
-            :items="shuffleArray([...exercise.distractors, exercise.correct_answer_lemma])"
+            :items="formattedItems(index, exercise)"
             label="Choose the correct word"
+            item-title="text"
+            item-value="value"
             outlined
             dense
             class="dropdown-select mt-5"
@@ -34,6 +36,12 @@
       <v-btn @click="submitAnswers" color="primary" :disabled="showSolution || !canSubmit">
         Submit
       </v-btn>
+
+      <div v-if="showSolution" class="summary mt-5">
+        <p >You answered {{ correctCount }} out of {{ exercises.length }} correctly. ({{
+            correctPercentage
+          }}%)</p>
+      </div>
     </div>
   </div>
 </template>
@@ -49,11 +57,15 @@ export default {
       exercises: [],
       selectedAnswers: [],
       showSolution: false,
+      correctCount: 0,
     }
   },
   computed: {
     canSubmit() {
       return this.selectedAnswers.every(answer => answer.selected_word)
+    },
+    correctPercentage() {
+      return ((this.correctCount / this.exercises.length) * 100).toFixed(1)
     }
   },
   created() {
@@ -83,7 +95,9 @@ export default {
       }))
 
       api.submitGapFilling(result).then(() => {
+        this.correctCount = result.filter(r => r.correct_or_not).length
         this.showSolution = true
+        window.scrollTo({ top: 0, behavior: 'smooth' })
       })
     },
     fetchGapFilling() {
@@ -105,6 +119,23 @@ export default {
       return this.selectedAnswers[index].selected_word === exercise.correct_answer_lemma
           ? 'correct-select'
           : 'incorrect-select'
+    },
+    formattedItems(index, exercise) {
+      const options = this.shuffleArray([...exercise.distractors, exercise.correct_answer_lemma])
+      return options.map(option => {
+        if (this.showSolution) {
+          const isCorrect = option === exercise.correct_answer_lemma
+          const isSelected = this.selectedAnswers[index].selected_word === option
+          if (isSelected && isCorrect) {
+            return { text: option + '  ✔️', value: option }
+          } else if (isSelected && !isCorrect) {
+            return { text: option + '  ❌', value: option }
+          } else {
+            return { text: option, value: option }
+          }
+        }
+        return { text: option, value: option }
+      })
     }
   }
 }
@@ -130,6 +161,7 @@ export default {
 .correct-select .v-input__control {
   background-color: #d4edda;
   border: 2px solid #28a745;
+  color: green;
 }
 
 .incorrect-select .v-input__control {
@@ -147,5 +179,11 @@ export default {
 
 .text-error {
   color: red;
+}
+
+.summary {
+  font-size: 1.2rem;
+  text-align: center;
+  font-weight: bold;
 }
 </style>
