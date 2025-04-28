@@ -258,13 +258,15 @@ export default defineComponent({
       return `${hours}:${minutes}:${secs}.${millis}`
     },
     handleSpacebar(event) {
-      const track = this.$refs['bilingual-caption']
-      if (track) {
-        // stop default spacebar scrolling behavior
-        event.preventDefault();
-        this.getSubtitleLine();
+      if (event.key === 'Shift') {
+        const track = this.$refs['bilingual-caption'];
+        if (track) {
+          event.preventDefault();  
+          this.getSubtitleLine();
+        }
       }
     }
+
   }
 })
 </script>
