@@ -1,9 +1,20 @@
 <template>
-  <div style="width: 80vw; height: 90vh;">
+  <div style="width: 80vw; height: 90vh; position: relative;">
     <h2>Graph Visualization</h2>
+
+    <div class="search-bar">
+      <input
+          v-model="searchTerm"
+          placeholder="Search node by text..."
+      />
+      <button @click="searchNode">Search</button>
+    </div>
+
     <div id="cy" style="width: 100%; height: 100%"></div>
   </div>
 </template>
+
+
 
 <script>
 import cytoscape from 'cytoscape'
@@ -36,7 +47,9 @@ export default {
             weight: 0.8042270976961936
           }
         ]
-      }
+      },
+      searchTerm: '',
+      cy: null,
     }
   },
   created() {
@@ -48,6 +61,25 @@ export default {
         this.graphData = response.data;
         this.initializeGraph();
       })
+    },
+    searchNode() {
+      if (!this.searchTerm.trim()) return;
+
+      this.cy.elements().removeClass('highlighted');
+
+      const searchTermLower = this.searchTerm.trim().toLowerCase();
+
+      const foundNode = this.cy.nodes().filter((node) => {
+        return node.data('label').toLowerCase().includes(searchTermLower);
+      });
+
+      if (foundNode.length > 0) {
+        const neighborhood = foundNode.closedNeighborhood();
+        neighborhood.addClass('highlighted');
+        this.cy.fit(neighborhood, 50);
+      } else {
+        alert('No matching node found.');
+      }
     },
     initializeGraph() {
       const {nodes, edges} = this.graphData
@@ -117,7 +149,7 @@ cy.on('tap', 'node', function(event) {
   subgraph.addClass('highlighted'); // Add the highlighted class to the subgraph elements
 
   // Optionally, zoom and center on the subgraph
-  cy.fit(subgraph, 50); // Zoom and center the view on the subgraph with a margin of 50px
+  cy.fit(subgraph, 30); // Zoom and center the view on the subgraph with a margin of 50px
 });
 
 // Styling for the highlighted subgraph elements
@@ -130,11 +162,42 @@ cy.style()
     'height': '5px' // Increase node size for highlighted nodes
   })
   .update();
-
+  this.cy = cy;
 
     }
   }
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.search-bar {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  z-index: 10;
+}
+
+.search-bar input {
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.search-bar button {
+  padding: 5px 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.search-bar button:hover {
+  background-color: #0056b3;
+}
+
+</style>
