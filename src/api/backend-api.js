@@ -29,9 +29,6 @@ const api = {
   },
   getVideo(request) {
     return axiosApi.post(`/videos`, request);
-    // return axiosApi.post(`/videos`, request, {
-    //   headers: { uuid: '123e4567-e89b-12d3-a456-426614174012' }
-    // });
   },
   updateChosenWords(request) {
     return axiosApi.post(`/videos/chosen`, request);

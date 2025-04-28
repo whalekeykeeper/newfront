@@ -23,7 +23,20 @@ const checkAndSetUUID = async () => {
       console.error('Error fetching UUID:', error)
     }
   } else {
-    isUUIDSet.value = true
+    try {
+      const response = await api.createUuid()
+      if (response.status === 200) {
+        isUUIDSet.value = true
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        console.warn('Invalid UUID found. Resetting...')
+        localStorage.removeItem('user_uuid')
+        await checkAndSetUUID()
+      } else {
+        console.error('Unexpected error:', error)
+      }
+    }
   }
 }
 

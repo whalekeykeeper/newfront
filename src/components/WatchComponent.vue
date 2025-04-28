@@ -95,7 +95,7 @@ export default defineComponent({
       snackbar: false,
       isLoading: false,
       isTranslating: false,
-      youtube_url: 'https://www.youtube.com/watch?v=LMt8xm4t7XQ',
+      youtube_url: 'https://www.youtube.com/watch?v=f2O6mQkFiiw',
       video_id: '',
       stream_url: '',
       vtt_url: '',
@@ -139,14 +139,12 @@ export default defineComponent({
     getVideo() {
       this.isLoading = true
 
-
       const baseStreamUrl = `${API_BASE_URL}/videos/stream/`;
       const baseVttUrl = `${API_BASE_URL}/videos/vtt/`;
-      // const baseStreamUrl = 'http://192.168.2.104:8000/api/videos/stream/'
-      // const baseVttUrl = 'http://192.168.2.104:8000/api/videos/vtt/'
+
       const payload = {
         video_url: this.youtube_url,
-        uuid: '123e4567-e89b-12d3-a456-426614174012'
+        uuid: localStorage.getItem('user_uuid')
       }
 
       api
