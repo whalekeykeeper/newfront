@@ -17,17 +17,17 @@
         >
           Exercise {{ index + 1 }}
         </h3>
-        <p
-          v-if="showSolution"
-          :style="{
-            color:
-              selectedAnswers[index]['selected_word'] === exercise.correct_answer_lemma
-                ? 'green'
-                : 'red'
-          }"
-        >
-          {{ selectedAnswers[index]['selected_word'] }} / {{ exercise.correct_answer_lemma }}
-        </p>
+<!--        <p-->
+<!--          v-if="showSolution"-->
+<!--          :style="{-->
+<!--            color:-->
+<!--              selectedAnswers[index]['selected_word'] === exercise.correct_answer_lemma-->
+<!--                ? 'green'-->
+<!--                : 'red'-->
+<!--          }"-->
+<!--        >-->
+<!--          {{ selectedAnswers[index]['selected_word'] }} / {{ exercise.correct_answer_lemma }}-->
+<!--        </p>-->
         <div v-for="(wordForm, wordIndex) in exercise.select_list" :key="wordIndex" class="word-form">
           <div
             v-for="(sentence, sentenceIndex) in wordForm.sentences"
@@ -40,14 +40,36 @@
             </p>
           </div>
         </div>
-        <v-select
-          v-model="selectedAnswers[index]['selected_word']"
-          :items="shuffleArray([...exercise.distractors, exercise.correct_answer_lemma])"
-          label="Choose the correct word"
-          outlined
-          dense
-          class="w-50 mt-5"
-        ></v-select>
+<!--        <v-select-->
+<!--          v-model="selectedAnswers[index]['selected_word']"-->
+<!--          :items="shuffleArray([...exercise.distractors, exercise.correct_answer_lemma])"-->
+<!--          label="Choose the correct word"-->
+<!--          outlined-->
+<!--          dense-->
+<!--          class="w-50 mt-5"-->
+<!--        ></v-select>-->
+        <div class="dropdown-container">
+<!--          <v-select-->
+<!--              v-model="selectedAnswers[index]['selected_word']"-->
+<!--              :items="shuffleArray([...exercise.distractors, exercise.correct_answer_lemma])"-->
+<!--              label="Choose the correct word"-->
+<!--              outlined-->
+<!--              dense-->
+<!--          ></v-select>-->
+          <v-select
+              v-model="selectedAnswers[index]['selected_word']"
+              :items="shuffleArray([...exercise.distractors, exercise.correct_answer_lemma])"
+              label="Choose the correct word"
+              outlined
+              dense
+              class="mt-5"
+              :class="{
+                'correct-select': showSolution && selectedAnswers[index]['selected_word'] === exercise.correct_answer_lemma,
+                'incorrect-select': showSolution && selectedAnswers[index]['selected_word'] !== exercise.correct_answer_lemma
+              }"
+          />
+
+        </div>
       </div>
 
       <v-btn @click="submitAnswers" color="primary" :disabled="showSolution || !canSubmit"
@@ -122,4 +144,24 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.dropdown-container {
+  width: 100%;
+  max-width: 600px; /* 或者800px，看你需要多宽 */
+  margin: 0 auto;
+}
+
+.v-select {
+  width: 100%;
+}
+.correct-select .v-input__control {
+  background-color: #d4edda; /* 淡绿色背景 */
+  border: 2px solid #28a745; /* 深绿边框 */
+}
+
+.incorrect-select .v-input__control {
+  background-color: #f8d7da; /* 淡红色背景 */
+  border: 2px solid #dc3545; /* 深红边框 */
+}
+
+</style>
