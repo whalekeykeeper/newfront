@@ -1,79 +1,38 @@
 <template>
   <div>
     <v-progress-circular class="text-center" indeterminate v-if="isLoading" />
-    <div v-else style="width: 80vw; font-size: 1.2rem" class="large-text">
+    <div v-else class="exercise-container">
       <h1>Exercises</h1>
       <p>Select the correct word that fits all sentences displayed.</p>
+
       <div v-for="(exercise, index) in exercises" :key="index" class="exercise">
-              <v-divider class="mb-4 mt-4"/>
-        <h3
-          :style="{
-            color: !showSolution
-              ? 'black'
-              : selectedAnswers[index]['selected_word'] === exercise.correct_answer_lemma
-              ? 'green'
-              : 'red'
-          }"
-        >
+        <v-divider class="my-4" />
+        <h3 :class="solutionColorClass(index, exercise)">
           Exercise {{ index + 1 }}
         </h3>
-<!--        <p-->
-<!--          v-if="showSolution"-->
-<!--          :style="{-->
-<!--            color:-->
-<!--              selectedAnswers[index]['selected_word'] === exercise.correct_answer_lemma-->
-<!--                ? 'green'-->
-<!--                : 'red'-->
-<!--          }"-->
-<!--        >-->
-<!--          {{ selectedAnswers[index]['selected_word'] }} / {{ exercise.correct_answer_lemma }}-->
-<!--        </p>-->
-        <div v-for="(wordForm, wordIndex) in exercise.select_list" :key="wordIndex" class="word-form">
-          <div
-            v-for="(sentence, sentenceIndex) in wordForm.sentences"
-            :key="sentenceIndex"
-            class="sentence"
-          >
+
+        <div v-for="(wordForm, wordIndex) in exercise.select_list" :key="wordIndex">
+          <div v-for="(sentence, sentenceIndex) in wordForm.sentences" :key="sentenceIndex" class="sentence">
             <p>
               {{ wordIndex + sentenceIndex + 1 }}. {{ sentence }}
-              <span v-if="showSolution" style="color: green">({{ wordForm.word }})</span>
+              <span v-if="showSolution" class="solution-word">({{wordForm.word }})</span>
             </p>
           </div>
         </div>
-<!--        <v-select-->
-<!--          v-model="selectedAnswers[index]['selected_word']"-->
-<!--          :items="shuffleArray([...exercise.distractors, exercise.correct_answer_lemma])"-->
-<!--          label="Choose the correct word"-->
-<!--          outlined-->
-<!--          dense-->
-<!--          class="w-50 mt-5"-->
-<!--        ></v-select>-->
-        <div class="dropdown-container">
-<!--          <v-select-->
-<!--              v-model="selectedAnswers[index]['selected_word']"-->
-<!--              :items="shuffleArray([...exercise.distractors, exercise.correct_answer_lemma])"-->
-<!--              label="Choose the correct word"-->
-<!--              outlined-->
-<!--              dense-->
-<!--          ></v-select>-->
-          <v-select
-              v-model="selectedAnswers[index]['selected_word']"
-              :items="shuffleArray([...exercise.distractors, exercise.correct_answer_lemma])"
-              label="Choose the correct word"
-              outlined
-              dense
-              class="mt-5"
-              :class="{
-                'correct-select': showSolution && selectedAnswers[index]['selected_word'] === exercise.correct_answer_lemma,
-                'incorrect-select': showSolution && selectedAnswers[index]['selected_word'] !== exercise.correct_answer_lemma
-              }"
-          />
 
-        </div>
+        <v-select
+            v-model="selectedAnswers[index].selected_word"
+            :items="shuffleArray([...exercise.distractors, exercise.correct_answer_lemma])"
+            label="Choose the correct word"
+            outlined
+            dense
+            class="dropdown-select mt-5"
+            :class="selectSolutionClass(index, exercise)"
+        />
       </div>
 
-      <v-btn @click="submitAnswers" color="primary" :disabled="showSolution || !canSubmit"
-        >Submit
+      <v-btn @click="submitAnswers" color="primary" :disabled="showSolution || !canSubmit">
+        Submit
       </v-btn>
     </div>
   </div>
@@ -94,7 +53,7 @@ export default {
   },
   computed: {
     canSubmit() {
-      return this.selectedAnswers.every((answer) => answer.selected_word !== '')
+      return this.selectedAnswers.every(answer => answer.selected_word)
     }
   },
   created() {
@@ -103,65 +62,90 @@ export default {
   methods: {
     shuffleArray(array) {
       return array
-        .map((item) => ({ item, sort: Math.random() }))
-        .sort((a, b) => a.sort - b.sort)
-        .map(({ item }) => item)
+          .map(item => ({ item, sort: Math.random() }))
+          .sort((a, b) => a.sort - b.sort)
+          .map(({ item }) => item)
     },
-
     initializeSelectedAnswers() {
-      for (const exercise of this.exercises) {
-        this.selectedAnswers.push({
-          node_id: exercise.node_id,
-          exercise_id: exercise.exercise_id,
-          correct_or_not: false,
-          selected_word: '',
-          solution: exercise.correct_answer_lemma
-        })
-      }
+      this.selectedAnswers = this.exercises.map(exercise => ({
+        node_id: exercise.node_id,
+        exercise_id: exercise.exercise_id,
+        correct_or_not: false,
+        selected_word: '',
+        solution: exercise.correct_answer_lemma
+      }))
     },
     submitAnswers() {
-      const result = this.selectedAnswers.map((answer) => ({
+      const result = this.selectedAnswers.map(answer => ({
         node_id: answer.node_id,
         exercise_id: answer.exercise_id,
         correct_or_not: answer.selected_word === answer.solution
       }))
 
-      api.submitGapFilling(result).then((response) => {
-        console.log(response.data)
-        this.showSolution = true;
+      api.submitGapFilling(result).then(() => {
+        this.showSolution = true
       })
     },
     fetchGapFilling() {
-      this.isLoading = true;
-      api.getGapFilling().then((response) => {
-        console.log(response.data)
-        this.exercises = response.data;
+      this.isLoading = true
+      api.getGapFilling().then(response => {
+        this.exercises = response.data
         this.initializeSelectedAnswers()
-        this.isLoading = false;
+        this.isLoading = false
       })
+    },
+    solutionColorClass(index, exercise) {
+      if (!this.showSolution) return 'text-black'
+      return this.selectedAnswers[index].selected_word === exercise.correct_answer_lemma
+          ? 'text-success'
+          : 'text-error'
+    },
+    selectSolutionClass(index, exercise) {
+      if (!this.showSolution) return ''
+      return this.selectedAnswers[index].selected_word === exercise.correct_answer_lemma
+          ? 'correct-select'
+          : 'incorrect-select'
     }
   }
 }
 </script>
 
 <style scoped>
-.dropdown-container {
-  width: 100%;
-  max-width: 600px; /* 或者800px，看你需要多宽 */
+.exercise-container {
+  width: 80vw;
+  font-size: 1.2rem;
   margin: 0 auto;
 }
 
-.v-select {
+.dropdown-select {
+  width: 100%;
+  max-width: 80vw;
+  margin: 0 auto;
+}
+
+.v-input {
   width: 100%;
 }
+
 .correct-select .v-input__control {
-  background-color: #d4edda; /* 淡绿色背景 */
-  border: 2px solid #28a745; /* 深绿边框 */
+  background-color: #d4edda;
+  border: 2px solid #28a745;
 }
 
 .incorrect-select .v-input__control {
-  background-color: #f8d7da; /* 淡红色背景 */
-  border: 2px solid #dc3545; /* 深红边框 */
+  background-color: #f8d7da;
+  border: 2px solid #dc3545;
 }
 
+.solution-word {
+  color: green;
+}
+
+.text-success {
+  color: green;
+}
+
+.text-error {
+  color: red;
+}
 </style>
