@@ -1,18 +1,26 @@
 <template>
   <h1 class="mb-5">FRAME - your learning app</h1>
   <div>
-    <v-text-field
-      v-model="youtube_url"
-      :append-icon="'mdi-send'"
-      density="compact"
-      label="Enter YouTube video link"
-      type="url"
-      name="url"
-      @click:append="getVideo"
-      @keyup.enter="getVideo(youtube_url)"
-      clearable
-    >
-    </v-text-field>
+    <v-container>
+      <v-row justify="center">
+        <v-col cols="12" sm="10" md="8" lg="6">
+          <v-text-field
+              v-model="youtube_url"
+              :append-icon="'mdi-send'"
+              density="compact"
+              label="Enter YouTube video link"
+              type="url"
+              name="url"
+              @click:append="getVideo"
+              @keyup.enter="getVideo(youtube_url)"
+              clearable
+              outlined
+              class="video-input"
+          />
+        </v-col>
+      </v-row>
+    </v-container>
+
 
     <v-progress-circular v-if="isLoading" indeterminate />
     <div v-else>
@@ -157,10 +165,20 @@ export default defineComponent({
             this.vtt_url = `${baseVttUrl}${id}`
           } else {
             console.error('Failed to get the video/subtitle:', response.statusText)
+            alert('视频处理失败，请稍后再试。')
           }
         })
         .catch((error) => {
-          console.error('Error fetching video:', error)
+          // console.error('Error fetching video:', error)
+          if (error.response?.status === 400) {
+            alert('请输入有效的YouTube平台@TED包含简体中文和英文字幕的视频链接！')
+          } else {
+            alert('处理视频时发生错误，请稍后再试。')
+            console.error('Error fetching video:', error)
+          }
+          this.video_id = ''
+          this.stream_url = ''
+          this.vtt_url = ''
         })
         .finally(() => {
           this.isLoading = false
@@ -316,5 +334,7 @@ div {
   font-size: 18px;
 }
 
-
+.video-input {
+  min-width: 500px;
+}
 </style>
