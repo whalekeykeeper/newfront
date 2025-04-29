@@ -36,8 +36,17 @@
         <li>📈 通过交互式词汇图谱追踪词汇增长。</li>
         <li>🔄 支持跨设备同步词汇数据。</li>
       </ul>
+
+      <p class="survey-section">
+        <p>如果你愿意，请点击一下按钮，帮我们做一份调查！谢谢！</p>
+        <button @click="goToSurvey" class="survey-button">
+          参加调查问卷
+        </button>
+      </p>
     </div>
+
   </div>
+
 </template>
 
 <style scoped>
@@ -78,6 +87,55 @@ ul {
 li {
   margin-bottom: 0.7rem;
 }
+
+.about-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.survey-section {
+  margin-top: 2rem;
+}
+
+.survey-button {
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  background-color: #4CAF50;       /* 绿色背景 */
+  color: white;                    /* 白色文字 */
+  border: none;                    /* 去掉默认边框 */
+  border-radius: 8px;              /* 圆角按钮 */
+  cursor: pointer;                 /* 鼠标悬停变成小手 */
+  transition: background-color 0.3s ease;
+}
+
+.survey-button:hover {
+  background-color: #45a049;       /* 悬浮时变深一点的绿色 */
+}
+
 </style>
+
+
 <script setup>
+import { ref, onMounted } from 'vue';
+const formBaseUrl = "https://docs.google.com/forms/d/e/1FAIpQLSeVQvejRq4dQGMiO2GNqbCFM_3Xitdcg5azii6ogNTTpJZ8Xg/viewform?usp=pp_url";
+const uuidFieldId = "entry.572579868";
+
+const uuid = ref('');
+
+onMounted(() => {
+  uuid.value = localStorage.getItem("uuid") || '';
+});
+
+const goToSurvey = () => {
+  if (!uuid.value) {
+    alert("Didn't find uuid, can not jump, please reload or re-visit.");
+    return;
+  }
+  const finalUrl = `${formBaseUrl}&${uuidFieldId}=${encodeURIComponent(uuid.value)}`;
+  window.open(finalUrl, "_blank"); 
+};
 </script>
