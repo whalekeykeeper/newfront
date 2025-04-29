@@ -2,7 +2,7 @@
   <h1 class="mb-5">FRAME - your learning app</h1>
   <div>
     <v-container>
-      <v-row justify="center">
+      <v-row>
         <v-col cols="12" sm="10" md="8" lg="6">
           <v-text-field
               v-model="youtube_url"
