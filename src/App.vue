@@ -49,10 +49,10 @@ onMounted(() => {
   <v-app app class="bg-white" fluid v-if="isUUIDSet">
     <v-app-bar>
       <v-app-bar-title @click="$router.push('/')" style="cursor: pointer"
-        >Learning by Watching
+        >FRAME
       </v-app-bar-title>
-      <v-btn to="/about">About</v-btn>
-      <v-btn to="/wordlist">Wordlist</v-btn>
+      <v-btn to="/about">About FRAME</v-btn>
+      <v-btn to="/wordlist">My word list</v-btn>
       <v-btn to="/gapfilling">Exercises</v-btn>
       <v-btn to="/graph">Knowledge Graph</v-btn>
     </v-app-bar>

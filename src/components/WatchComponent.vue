@@ -1,5 +1,5 @@
 <template>
-  <h1 class="mb-5">Learning by Watching</h1>
+  <h1 class="mb-5">FRAME - your learning app</h1>
   <div>
     <v-text-field
       v-model="youtube_url"

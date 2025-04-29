@@ -3,32 +3,38 @@
     <div class="card english-card">
       <h1>About This Project</h1>
       <p>
-        This project transforms watching YouTube videos into a powerful language learning experience.
+        The FRAME app transforms watching YouTube videos into a powerful language learning experience.
         By using bilingual subtitles, personalized vocabulary tracking, and adaptive exercises,
         it helps you grow your vocabulary naturally while enjoying authentic content.
       </p>
+      <br>
       <p><strong>Key Features:</strong></p>
       <ul>
         <li>🖥️ Watch videos with synchronized bilingual subtitles.</li>
-        <li>🧠 Automatically collect new words into your personal wordlist.</li>
+        <li>🧠 Automatically collect new words into your personal vocabulary graph.</li>
+        <li>🖱️ Click on English subtitle words or press Shift to add interesting words to your My Word List.</li>
         <li>🎯 Practice with gap-filling exercises generated from real video sentences.</li>
         <li>📈 Track your vocabulary growth over time through an interactive word graph.</li>
+        <li>🔄 Sync your vocabulary data across devices.</li>
       </ul>
     </div>
 
     <div class="card chinese-card">
       <h1>关于本项目</h1>
       <p>
-        本项目致力于将观看 YouTube 视频转变为高效的语言学习体验。
+        FRAME应用致力于将观看 YouTube 视频转变为高效的语言学习体验。
         通过双语字幕、个性化词汇追踪以及自适应练习，
         帮助你在享受真实内容的过程中，自然积累并掌握词汇。
       </p>
+      <br>
       <p><strong>核心功能：</strong></p>
       <ul>
         <li>🖥️ 支持中英文同步双语字幕播放。</li>
-        <li>🧠 自动收集新词汇并加入个人词表。</li>
+        <li>🧠 自动收集新词汇并加入个人词汇空间。</li>
+        <li>🖱️ 点击英文字幕或按下 Shift 键快速添加单词到My word list。</li>
         <li>🎯 基于真实视频句子生成填空练习。</li>
         <li>📈 通过交互式词汇图谱追踪词汇增长。</li>
+        <li>🔄 支持跨设备同步词汇数据。</li>
       </ul>
     </div>
   </div>
@@ -73,3 +79,5 @@ li {
   margin-bottom: 0.7rem;
 }
 </style>
+<script setup>
+</script>
