@@ -6,15 +6,15 @@ import { onMounted, ref } from 'vue'
 const isUUIDSet = ref(false)
 
 const checkAndSetUUID = async () => {
-  let uuid = localStorage.getItem('user_uuid')
+  let uuid = localStorage.getItem('uuid')
 
   if (!uuid) {
     try {
-      const response = await api.createUuid()
+      const response = await api.createUuid({ uuid: "" });
 
       if (response.status === 200) {
         uuid = response.data.uuid
-        localStorage.setItem('user_uuid', uuid)
+        localStorage.setItem('uuid', uuid)
         isUUIDSet.value = true
       } else {
         console.error('Failed to fetch UUID:', response.statusText)
@@ -24,14 +24,15 @@ const checkAndSetUUID = async () => {
     }
   } else {
     try {
-      const response = await api.createUuid()
+
+      const response = await api.createUuid({ uuid });
       if (response.status === 200) {
         isUUIDSet.value = true
       }
     } catch (error) {
       if (error.response && error.response.status === 400) {
         console.warn('Invalid UUID found. Resetting...')
-        localStorage.removeItem('user_uuid')
+        localStorage.removeItem('uuid')
         await checkAndSetUUID()
       } else {
         console.error('Unexpected error:', error)

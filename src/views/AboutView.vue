@@ -121,7 +121,12 @@ li {
 
 <script setup>
 import { ref, onMounted } from 'vue';
-const formBaseUrl = "https://docs.google.com/forms/d/e/1FAIpQLSeVQvejRq4dQGMiO2GNqbCFM_3Xitdcg5azii6ogNTTpJZ8Xg/viewform?usp=pp_url";
+// test link
+const formBaseUrl =
+    "https://docs.google.com/forms/d/e/1FAIpQLSdKlLr9dmLYluPwfuUXSl5twUg-nG90nhxtFZen8iq5GnUyVw/viewform?usp=pp_url"
+
+
+// const formBaseUrl = "https://docs.google.com/forms/d/e/1FAIpQLSeVQvejRq4dQGMiO2GNqbCFM_3Xitdcg5azii6ogNTTpJZ8Xg/viewform?usp=pp_url";
 const uuidFieldId = "entry.572579868";
 
 const uuid = ref('');
@@ -136,6 +141,6 @@ const goToSurvey = () => {
     return;
   }
   const finalUrl = `${formBaseUrl}&${uuidFieldId}=${encodeURIComponent(uuid.value)}`;
-  window.open(finalUrl, "_blank"); 
+  window.open(finalUrl, "_blank");
 };
 </script>

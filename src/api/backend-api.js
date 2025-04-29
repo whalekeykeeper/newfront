@@ -1,27 +1,21 @@
-import axios from 'axios'
+import axios from 'axios';
 
 export const API_BASE_URL = 'http://localhost:8000/api';
-
-// const axiosApi = axios.create({
-//   baseURL: 'http://localhost:8000/api'
-// })
 
 const axiosApi = axios.create({
   baseURL: API_BASE_URL
 })
 
 axiosApi.interceptors.request.use(
-  (config) => {
-    const userUUID = localStorage.getItem('user_uuid')
-    if (userUUID) {
-      config.headers['uuid'] = userUUID  //"8f925804-da14-4ae5-a365-37a635955bc9"
-    }
-    return config
-  },
-  (error) => {
-    return Promise.reject(error)
-  }
-)
+    (config) => {
+      const userUUID = localStorage.getItem('user_uuid');
+      if (userUUID) {
+        config.headers['uuid'] = userUUID;
+      }
+      return config;
+    },
+    (error) => Promise.reject(error)
+);
 
 const api = {
   getTest() {
@@ -33,8 +27,8 @@ const api = {
   updateChosenWords(request) {
     return axiosApi.post(`/videos/chosen`, request);
   },
-  createUuid() {
-    return axiosApi.post('/users', { uuid: "" });
+  createUuid(request) {
+    return axiosApi.post('/users', request);
   },
   getWordList() {
     return axiosApi.get(`/chosen_words`);
