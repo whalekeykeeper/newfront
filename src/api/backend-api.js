@@ -8,7 +8,7 @@ const axiosApi = axios.create({
 
 axiosApi.interceptors.request.use(
     (config) => {
-      const userUUID = localStorage.getItem('user_uuid');
+      const userUUID = localStorage.getItem('uuid');
       if (userUUID) {
         config.headers['uuid'] = userUUID;
       }
