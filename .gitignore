@@ -1,12 +1,4 @@
 /node_modules
 .DS_Store
 /.idea
-src/components/WelcomeItem.vue
-src/components/WatchComponent.vue
-src/components/icons/IconTooling.vue
-src/components/icons/IconSupport.vue
-src/components/icons/IconDocumentation.vue
-src/components/icons/IconCommunity.vue
-src/components/HelloWorld.vue
-src/components/ButtonComponent.vue
 public/favicon.ico
